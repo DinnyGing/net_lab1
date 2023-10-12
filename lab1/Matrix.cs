@@ -29,7 +29,7 @@ namespace lab1
             {
                 for (int j = 0; j < n; j++)
                 {
-                    Data[i, j] = random.Next(-2, 3);
+                    Data[i, j] = random.Next(-5, 10);
                 }
             }
         } 

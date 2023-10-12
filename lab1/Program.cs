@@ -14,7 +14,7 @@ namespace lab1
         
             Matrix matrix = new Matrix(20);
             matrix.FillIn();
-            //matrix.Print(matrix.Data);
+            matrix.Print(matrix.Data);
 
             Console.WriteLine("------------------------------");
 

@@ -96,7 +96,7 @@ namespace lab1
                     int k = i;
                     Thread thread = new Thread(() =>
                     {
-                        WriteLine("Thread" + k + " come in");
+                        //WriteLine("Thread" + k + " come in");
                         for (int j = 0; j < step && length>0; j++)
                         {
                             lock (objLock)
@@ -105,8 +105,8 @@ namespace lab1
                             }
                             InSide(k + j);
                         }
-                        Thread.Sleep(1000);
-                        WriteLine("Thread" + k + " come out");
+                        //Thread.Sleep(1000);
+                        //WriteLine("Thread" + k + " come out");
 
                     });
                     thread.Start();
