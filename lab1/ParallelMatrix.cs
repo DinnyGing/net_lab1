@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Numerics;
@@ -13,6 +14,8 @@ namespace lab1
     internal class ParallelMatrix
     {
         public int[,] Data;
+
+        BigInteger determ = 0;
         int n;
         Random random = new Random();
 
@@ -52,6 +55,29 @@ namespace lab1
                 WriteLine();
             }
         }
+        private void InSide(int k)
+        {
+            BigInteger r1 = 1;
+            BigInteger r2 = 1;
+            for (int j = 0; j < n; j++)
+            {
+                if (j + k >= n)
+                {
+                    r1 *= Data[j, j + k - n];
+                    r2 *= Data[j, n * 2 - k - j - 1];
+                }
+                else
+                {
+                    r1 *= Data[j, j + k];
+                    r2 *= Data[j, n - k - j - 1];
+                }
+            }
+            lock (objLock)
+            {
+                determ += r1;
+                determ -= r2;
+            }
+        }
         public BigInteger Determinant()
         {
             if (Data.GetLength(0) == 1)
@@ -64,7 +90,6 @@ namespace lab1
             }
             else
             {
-                BigInteger determ = 0;
                 int length = Data.GetLength(0);
                 Queue<Thread> queueInRun = new Queue<Thread>();
                 for (int i = 0; i < length; i++)
@@ -75,26 +100,7 @@ namespace lab1
                         semaphore.WaitOne();
                         //WriteLine("Thread" + k + " come in");
 
-                        BigInteger r1 = 1;
-                        BigInteger r2 = 1;
-                        for (int j = 0; j < length; j++)
-                        {
-                            if (j + k >= length)
-                            {
-                                r1 *= Data[j, j + k - length];
-                                r2 *= Data[j, length * 2 - k - j - 1];
-                            }
-                            else
-                            {
-                                r1 *= Data[j, j + k];
-                                r2 *= Data[j, length - k - j - 1];
-                            }
-                        }
-                        lock (objLock)
-                        {
-                            determ += r1;
-                            determ -= r2;
-                        }
+                        InSide(k);
                         //Thread.Sleep(3000);
                         semaphore.Release();
                         //WriteLine("Thread" + k + " come out");
